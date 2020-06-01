@@ -1,0 +1,61 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="p-4 mt-5">
+    <div clas="container">
+
+      <div class="card">
+        <div class="card-header">
+          Votre profile Pharma Blokchcian
+        </div>
+        <div class="card-body">
+          <h1 class="card-title" style="text-transform:capitalize; font-weight: bold;">{{ actor.actor_name }}</h1>
+          <h6 class="card-subtitle mb-2 text-muted">ID: {{ actor.id }}</h6>
+          <br/>
+          <div class="card-text">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-header">
+                    Informations globale
+                  </div>
+                  <div class="card-body">
+                    <p id="email"> <span style="font-weight: bold">Email: </span>{{ actor.email }} </p>
+                    <p><span style="font-weight: bold">Fabricateur: </span>{{ actor.manufacturer }} </p>
+                    <p id="Numero Telephone"><span style="font-weight: bold">Numero Telephone: </span>{{ actor.phone }} </p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="card">
+                  <div class="card-header">
+                    Adresse
+                  </div>
+                  <div class="card-body">
+                    <p id="rue"> <span style="font-weight: bold">Rue: </span>{{ adress.street }} </p>
+                    <p id="cite"><span style="font-weight: bold">Cite: </span>{{ adress.city }}</p>
+                    <p id="wilaya"><span style="font-weight: bold">Wilaya: </span>{{ adress.state }}</p>
+                    <p id="code_postale"><span style="font-weight: bold">Code Postale: </span>{{ adress.zip_code }} </p>
+                    <p id="pays"><span style="font-weight: bold">Pays: </span>{{ adress.country }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% if actor.id == current_user.id %}
+            <button class="btn btn-info" onclick="editActor()">Modifier</button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    function editActor(){
+
+      console.log("Editing")
+    }
+  </script>
+
+{% endblock %}

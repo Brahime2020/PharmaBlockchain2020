@@ -1,0 +1,61 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card mb-3 m-3" style="max-width: 540px;">
+  <div class="row no-gutters">
+    <div class="col-md-3" style="max-height:500px;">
+      <img src="../static/img/datamatrix/{{ datamatrix_data }}.png" class="card-img" alt="...">
+    </div>
+    <div class="col-md-9">
+      <div class="card-body">
+        <h5 class="card-title">Lot ID: {{ transactions[0].batch_id }}</h5>
+        <p class="card-text"><span style="font-weight:bold;">Médicament</span>: {{ medicine.medicine_name }} [ ID Médicament: {{ medicine.medicine_id }} ]</p>
+        <p class="card-text"><span style="font-weight:bold;">Quantité:</span>: {{ transactions[0].quantity }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="p-3">
+ <table id="table" class="table table-hover table-bordered">
+   <thead  class="thead-light">
+     <tr>
+       <th class="" scope="col">ID Expéditeur</th>
+       <th class="" scope="col">ID Destinataire</th>
+       <th class="" scope="col">Lot ID</th>
+       <th class="" scope="col">Quantité</th>
+       <th class="" scope="col">Statut</th>
+       <th class="" scope="col">Date</th>
+     </tr>
+   </thead>
+   <tbody id="myTable">
+     {% for transaction in transactions %}
+         <tr>
+           <td name="sender_id"><a href="{{ url_for('actorID', actor_id = transaction.sender_id) }}">{{ transaction.sender_id }}</a></td>
+           <td><a href="{{ url_for('actorID', actor_id = transaction.recipient_id) }}">{{ transaction.recipient_id }}</a></td>
+           <td name="batch_id"><a href="{{ url_for('batch', batch_id=transaction.batch_id) }}">{{ transaction.batch_id }}</a></td>
+           <td>{{ transaction.quantity }}</td>
+           <td>{{ transaction.status }}</td>
+           <td>{{ readable_time(transaction.timestamp) }}</td>
+         </tr>
+     {% endfor %}
+   </tbody>
+ </table>
+</div>
+
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+ $('#table').DataTable( {
+     "searching": false,
+     "info":     false,
+     order: [[ 7, 'desc' ]]
+ } );
+} );
+</script>
+
+
+{% endblock %}

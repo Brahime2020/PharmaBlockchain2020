@@ -1,0 +1,198 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+	<div class="pl-3 pr-3 pt-3">
+		<div class="row">
+			<div class="col-12 text-right">
+				
+			</div>
+		</div>
+	</div>
+	<hr class="mt-0 mb-0">
+
+	<div class="pl-3 pr-3 pt-3">
+		<div class="row">
+			<div class="col-3">
+				<input class="form-control" id="medicineNameInput" type="text" placeholder="Filtrer par le nom de medicament" onkeyup="filterByMedecineName()">
+			</div>
+			<div class="col-3">
+				<input class="form-control" id="batchInput" type="text" placeholder="Filtrer par ID Lot" onkeyup="filterByBatchID()">
+			</div>
+			<div class="col-2">
+				<input class="form-control" id="senderIDInput" type="text" placeholder="Filtrer par ID Expéditeur" onkeyup="filterBySenderID()">
+			</div>
+			<div class="col-2">
+				<input class="form-control" id="recipientIDInput" type="text" placeholder="Filtrer par ID Destinataire" onkeyup="filterByRecipientID()">
+			</div>
+			<div class="col-2 text-right">
+		  	<select class="form-control" onchange="filterByStatus()" id="statusInput">
+		      <option value="all">Tous les transactions</option>
+		      <option value="accepted">Accepté</option>
+		      <option value="refused">Refusé</option>
+		    	<option value="waiting">En Attente</option>
+		  	</select>
+			</div>
+		</div>
+	</div>
+	<hr>
+
+	<div class="pl-3 pr-3">
+		<table id="table" class="table table-hover table-bordered">
+	    <thead  class="thead-light">
+	      <tr>
+	        <th class="" scope="col">ID Medicament</th>
+	        <th class="" scope="col">Nom Medicament</th>
+	        <th class="" scope="col">ID Lot</th>
+	        <th class="" scope="col">Quantité</th>
+	        <th class="" scope="col">ID Expéditeur</th>
+		<th class="" scope="col">ID Destinataire</th>
+	        <th class="" scope="col">Statut</th>
+	        <th class="" scope="col">Date</th>
+	      </tr>
+	    </thead>
+	    <tbody id="myTable">
+	      {% for transaction in transactions %}
+	        <form class="form-horizontal" method="POST" action="{{ url_for('submit_accept_transaction') }}">
+	          <tr>
+	            <td>{{ transaction.medicine_id }}</td>
+	            <td class="med_name">{{ transaction.medicine_name }}</td>
+							<td name="batch_id"><a href="{{ url_for('batch', batch_id=transaction.batch_id) }}">{{ transaction.batch_id }}</a></td>
+	            <td name="batch_quantity">{{ transaction.quantity }}</td>
+							{% if transaction.sender_id == transaction.recipient_id %}
+							<td>Lot Crée</td>
+							<td><a href="{{ url_for('actorID', actor_id = transaction.recipient_id) }}">{{ transaction.recipient_id }}</a></td>
+							<td>{{ transaction.status }}</td>
+							{% else %}
+							<td name="sender_id"><a href="{{ url_for('actorID', actor_id = transaction.sender_id) }}">{{ transaction.sender_id }}</a></td>
+							<td><a href="{{ url_for('actorID', actor_id = transaction.recipient_id) }}">{{ transaction.recipient_id }}</a></td>
+							<td>{{ transaction.status }}</td>
+							{% endif %}
+	            <td>{{ readable_time(transaction.timestamp) }}</td>
+	          </tr>
+	        </form>
+	      {% endfor %}
+	    </tbody>
+	  </table>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+	// --- Afficher les options de commande de la table
+	$(document).ready(function() {
+		$('#table').DataTable( {
+				"searching": false,
+				"info":     false,
+				order: [[ 7, 'desc' ]]
+		} );
+	} );
+
+	// --- Fonctions pour les différents filtrages
+
+	function filterByMedecineName() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("medicineNameInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("table");
+		tr = table.getElementsByTagName("tr");
+		for (i = 1; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[1];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
+
+	function filterByBatchID() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("batchInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("table");
+		tr = table.getElementsByTagName("tr");
+		for (i = 1; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[2];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
+
+	function filterBySenderID() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("senderIDInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("table");
+		tr = table.getElementsByTagName("tr");
+		for (i = 1; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[4];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
+
+	function filterByRecipientID() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("recipientIDInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("table");
+		tr = table.getElementsByTagName("tr");
+		for (i = 1; i < tr.length; i++) {
+			td = tr[i].getElementsByTagName("td")[5];
+			if (td) {
+				txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					tr[i].style.display = "";
+				} else {
+					tr[i].style.display = "none";
+				}
+			}
+		}
+	}
+
+	function filterByStatus() {
+		var input, filter, table, tr, td, i, txtValue;
+		input = document.getElementById("statusInput");
+		filter = input.value.toUpperCase();
+		table = document.getElementById("table");
+		tr = table.getElementsByTagName("tr");
+		if(filter=="ALL") {
+			for (i = 1; i < tr.length; i++) {
+				console.log("All selected")
+				tr[i].style.display = "";
+			}
+		}else{
+			for (i = 1; i < tr.length; i++) {
+				td = tr[i].getElementsByTagName("td")[6];
+				if (td) {
+					txtValue = td.textContent || td.innerText;
+					if (txtValue.toUpperCase().indexOf(filter) > -1) {
+						tr[i].style.display = "";
+					} else {
+						tr[i].style.display = "none";
+					}
+				}
+			}
+		}
+	}
+
+</script>
+
+{% endblock %}
