@@ -10,7 +10,6 @@ Pour lancer la blockchain à partir d'un terminal, et la blockchain s'exécutera
    flask run -p 8000
   
    
-   
 Depuis un autre terminal, vous devez maintenant lancer le client de la blockchain:
    
    
