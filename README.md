@@ -11,7 +11,7 @@ Pour lancer la blockchain à partir d'un terminal, et la blockchain s'exécutera
   
    
 Depuis un autre terminal, vous devez maintenant lancer le client de la blockchain:
-   
+  
    
    
    cd PharmaBlockchain2020
